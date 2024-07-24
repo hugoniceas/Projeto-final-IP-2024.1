@@ -1,0 +1,119 @@
+import pygame, sys
+from pygame.locals import *
+import random, time
+
+
+pygame.init()
+
+#fps do jogo
+FPS = 60
+Frames = pygame.time.Clock()
+
+pygame.mixer.music.load('background.wav')
+pygame.mixer.music.play(-1)  
+
+altura = 600
+largura = 400
+velocidade = 5
+pontuacao = 0
+
+font = pygame.font.SysFont("Verdana", 60) #seleção de fontes
+font_pequena = pygame.font.SysFont("Verdana", 20)
+fim_de_jogo = font.render("Game Over", True, (0,0,0))
+
+imagem_de_fundo = pygame.image.load("AnimatedStreet.png")
+
+
+tela = pygame.display.set_mode((altura, largura)) #criando a tela do jogo
+tela.fill((255,255,255))
+pygame.display.set_caption("prototipo_1")
+
+class Inimigo(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__() #equivalente ao pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load("Enemy.png")
+        self.rect = self.image.get_rect()
+        self.rect.center = (0, random.randint(40, largura - 40)) #sorteia a posição y que o inimigo aparecerá dentro dos limites da estrada
+
+    def movimento(self):
+        global pontuacao #tem que usar global para que a mudança nessa função repercute no codigo todo
+        self.rect.move_ip(velocidade, 0)
+        if self.rect.left > altura: #cada inimigo que passar, contará no score
+            pontuacao += 1
+            self.rect.right = 0
+            self.rect.center = (0, random.randint(40, largura - 40)) #continua sorteando a posicao do inimigo
+
+class Jogador(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__() 
+        self.image = pygame.image.load("Player.png")
+        self.rect = self.image.get_rect()
+        self.rect.center = (520, 160)
+       
+    def movimento(self):
+        botao_pressionado = pygame.key.get_pressed()
+        
+        if self.rect.top > 0: #garante que não passará dos limites da tela
+            if botao_pressionado[K_UP]:
+                self.rect.move_ip(0, -5)
+        if self.rect.bottom < largura:        
+            if botao_pressionado[K_DOWN]:
+                self.rect.move_ip(0, 5)
+    
+    def obtencao_de_pontos(self):
+        pass
+
+class Objeto_para_pontos(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__(self)
+        pass
+
+jogador = Jogador() #iniciando as classes
+inimigo_1 = Inimigo()
+
+inimigos = pygame.sprite.Group() #caso queira adicionar outra sprite, ficará mais fácil
+inimigos.add(inimigo_1)
+all_sprites = pygame.sprite.Group()
+all_sprites.add(jogador)
+all_sprites.add(inimigo_1)
+
+INC_velocidade = pygame.USEREVENT + 1 
+pygame.time.set_timer(INC_velocidade, 1000) #adicionei um evento novo para almentar a velocidade a cada 1s
+
+while True:
+    for event in pygame.event.get():
+        if event.type == INC_velocidade:
+            velocidade += 0.5      
+        if event.type == QUIT:
+            pygame.quit()
+            sys.exit()
+
+    tela.blit(imagem_de_fundo, (0, 0))
+    scores = font_pequena.render(str(pontuacao), True, (0,0,0))
+    tela.blit(scores, (10, 10))
+
+    for sprite in all_sprites:
+        sprite.movimento()
+        tela.blit(sprite.image, sprite.rect)
+    #essa parte de cima substitui algo como essa parte de baixo
+    #inimigo.desenhar(tela)
+    # inimigo1.movimento(tela)
+    # jogador.desenhar(tela)
+    # inimigo1.desenhar(tela)
+        
+    if pygame.sprite.spritecollideany(jogador, inimigos): #aqui é pra detectar 
+        pygame.mixer.Sound('crash.wav').play()
+        time.sleep(1)
+                   
+        tela.fill((0,255,0))
+        tela.blit(fim_de_jogo, (130, 150))
+        
+        pygame.display.update()
+        for entity in all_sprites:
+            entity.kill() 
+        time.sleep(2)
+        pygame.quit()
+        sys.exit()        
+        
+    pygame.display.update()
+    Frames.tick(FPS)
