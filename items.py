@@ -14,7 +14,7 @@ class item(object):
     def draw(self, win, sprite):
         win.blit(sprite, (self.x,self.y))
 
-        #pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
+        pygame.draw.rect(win, (255, 0, 0), self.hitbox, 2)
 
     def reset_sprite_cyle(self):
         self.sprite_cycle = 0
@@ -27,7 +27,12 @@ class ficha_cassino(item):
         self.cycle_limit = 12
         self.cycle_step = 3
 
-
+class moeda(item):
+    def __init__(self,x,largura,altura,faixa):
+        super().__init__(x,largura,altura,faixa)
+        self.cycle_limit = 24
+        self.cycle_step = 3
+        self.hitbox = (self.x+18,self.y+18,largura,altura)
 
 
 

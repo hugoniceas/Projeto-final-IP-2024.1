@@ -96,7 +96,9 @@ inimigo = inimigo_teste.carro_inimigo(1000,4,166,100)
 
 #ficha de cassino teste
 ficha_teste = items.ficha_cassino(800,80,80,2)
-items.current_items['ficha cassino'].append(ficha_teste)
+
+#moeda teste
+moeda_teste = items.moeda(400,64,64,2)
 
 #delay de troca de faixa
 delay_faixa = 0
@@ -121,6 +123,8 @@ while running:
                 print(items.quantidade)
             if event.key == pygame.K_f: #cria uma ficha de cassino
                 items.current_items['ficha cassino'].append(ficha_teste)
+            if event.key == pygame.K_m: #cria uma moeda
+                items.current_items['moeda'].append(moeda_teste)
 
     #colisão do carro com inimigo
     if checar_colisao(player,inimigo):
