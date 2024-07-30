@@ -100,6 +100,12 @@ ficha_teste = items.ficha_cassino(800,80,80,2)
 #moeda teste
 moeda_teste = items.moeda(400,64,64,2)
 
+#fantasma teste
+fantasma_teste = items.fantasma(600,56,100,1)
+
+#interrogacao teste
+interrogacao_teste = items.interrogacao(500,32,100,3)
+
 #delay de troca de faixa
 delay_faixa = 0
 
@@ -125,6 +131,10 @@ while running:
                 items.current_items['ficha cassino'].append(ficha_teste)
             if event.key == pygame.K_m: #cria uma moeda
                 items.current_items['moeda'].append(moeda_teste)
+            if event.key == pygame.K_g: #cria um fantasma
+                items.current_items['fantasma'].append(fantasma_teste)
+            if event.key == pygame.K_i: #cria uma interrogação
+                items.current_items['interrogacao'].append(interrogacao_teste)
 
     #colisão do carro com inimigo
     if checar_colisao(player,inimigo):

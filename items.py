@@ -34,6 +34,19 @@ class moeda(item):
         self.cycle_step = 3
         self.hitbox = (self.x+18,self.y+18,largura,altura)
 
+class fantasma(item):
+    def __init__(self,x,largura,altura,faixa):
+        super().__init__(x,largura,altura,faixa)
+        self.cycle_limit = 32
+        self.cycle_step = 4
+        self.hitbox = (self.x+22,self.y,largura,altura)
+
+class interrogacao(item):
+    def __init__(self,x,largura,altura,faixa):
+        super().__init__(x,largura,altura,faixa)
+        self.cycle_limit = 24
+        self.cycle_step = 3
+        self.hitbox = (self.x+34,self.y,largura,altura)
 
 
 #dicionario que conterá todos os itens que estarão na tela:

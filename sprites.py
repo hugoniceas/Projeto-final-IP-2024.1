@@ -13,5 +13,11 @@ items = {'ficha cassino':[pygame.image.load('assets/ficha1.png'),pygame.image.lo
                      pygame.image.load('assets/coin_3.png'),pygame.image.load('assets/coin_4.png'),
                      pygame.image.load('assets/coin_5.png'),pygame.image.load('assets/coin_6.png'),
                      pygame.image.load('assets/coin_7.png'),pygame.image.load('assets/coin_8.png')],
-           'fantasma': [],
-            'interrogacao': []}
+           'fantasma': [pygame.image.load('assets/ghost1.png'),pygame.image.load('assets/ghost2.png'),
+                        pygame.image.load('assets/ghost3.png'),pygame.image.load('assets/ghost4.png'),
+                        pygame.image.load('assets/ghost5.png'),pygame.image.load('assets/ghost6.png'),
+                        pygame.image.load('assets/ghost7.png'),pygame.image.load('assets/ghost8.png')],
+            'interrogacao': [pygame.image.load('assets/question1.png'),pygame.image.load('assets/question2.png'),
+                             pygame.image.load('assets/question3.png'),pygame.image.load('assets/question4.png'),
+                             pygame.image.load('assets/question5.png'),pygame.image.load('assets/question6.png'),
+                             pygame.image.load('assets/question7.png'),pygame.image.load('assets/question8.png')]}
