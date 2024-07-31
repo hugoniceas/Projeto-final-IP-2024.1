@@ -6,11 +6,6 @@ class MenuInicial(GameState):
     def __init__(self, run):
         super().__init__('Menu', run, '')
 
-    def escrever_texto_opcoes(self, texto, fonte, posicao_x, posicao_y, tela):
-        mensagem = fonte.render(texto, True, (255, 255, 255))
-        sombra = fonte.render(texto, True, (0, 0, 0))
-        tela.blit(sombra, (posicao_x - 5, posicao_y - 2))
-        tela.blit(mensagem, (posicao_x, posicao_y))
 
     def abrir_menu(self):
         pygame.init()
@@ -76,3 +71,7 @@ class MenuInicial(GameState):
             self.escrever_texto_opcoes('Sair', fonte_menu, 305, 548, tela)
             tela.blit(cursor, (x_cursor, y_cursor))
             pygame.display.flip()
+
+if __name__ == '__main__':
+    menu = MenuInicial(True)
+    menu.abrir_menu()
