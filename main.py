@@ -77,11 +77,17 @@ def redraw_window(): #função para atualizar a tela
     pygame.display.update()
 
 
-def checar_colisao(objeto1,objeto2): #função que checa colisão entre 2 objetos
-    if objeto1.faixa == objeto2.faixa:
-        if objeto1.x + objeto1.largura > objeto2.hitbox[0] and objeto1.x < objeto2.hitbox[0] + objeto2.hitbox[2]:
-            return True
-    return False
+def checar_colisao(objeto1,objeto2,fantasma_ativo,tipo_objeto): #função que checa colisão entre 2 objetos
+    if tipo_objeto == "inimigo":
+        if objeto1.faixa == objeto2.faixa and not fantasma_ativo:
+            if objeto1.x + objeto1.largura > objeto2.hitbox[0] and objeto1.x < objeto2.hitbox[0] + objeto2.hitbox[2]:
+                return True
+        return False
+    else:
+        if objeto1.faixa == objeto2.faixa:
+            if objeto1.x + objeto1.largura > objeto2.hitbox[0] and objeto1.x < objeto2.hitbox[0] + objeto2.hitbox[2]:
+                return True
+        return False
 
 #criação da janela
 win = pygame.display.set_mode((1500,800))
@@ -158,22 +164,23 @@ while running:
 
 
     #colisão do carro com inimigo
-    if checar_colisao(player,inimigo):
+    if checar_colisao(player,inimigo,fantasma_ativo,'inimigo'):
         player.x = 0
 
     #colisão do carro com items
     for item_type in items.current_items.keys():
         for item in items.current_items[item_type]:
-            if checar_colisao(player,item):
+            if checar_colisao(player,item,fantasma_ativo,'item'):
                 item.hit()
                 items.current_items[item_type].remove(item)
                 items.quantidade[item_type] += 1
                 if item_type == 'fantasma':
                     fantasma_ativo = True
+                    tempo_ativacao = pygame.time.get_ticks()
                 elif item_type == 'interrogacao':
                     interrogacao_ativo = True
-                if fantasma_ativo or interrogacao_ativo:
                     tempo_ativacao = pygame.time.get_ticks()
+
 
     #timer dos items
     if fantasma_ativo or interrogacao_ativo:
