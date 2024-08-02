@@ -5,14 +5,14 @@ pygame.init()
 pygame.mixer.init()
 
 def tocar_musica():
-    pygame.mixer.music.load("C:\\Users\\Aluno\\Desktop\\jogo_pacman\\04 Bordeaux.mp3")
+    pygame.mixer.music.load("musicas\\04 Bordeaux.mp3")
     pygame.mixer.music.play(-1)
 
 def get_font(size):  # Retorna a fonte Press-Start-2P no tamanho desejado
-    return pygame.font.Font("C:\\Users\\Aluno\\Desktop\\proj\\Menu-System-PyGame-main\\PressStart2P-Regular.ttf", size)
+    return pygame.font.Font("PressStart2P-Regular.ttf", size)
 
 def estatisticas(tela,pontuacao, distancia, items_coletados):
-    BG_ESTATISTIVAS = pygame.image.load("C:\\Users\\Aluno\\Desktop\\jogo_pacman\\Menu-System-PyGame-main\\AnimatedStreet.png")
+    BG_ESTATISTIVAS = pygame.image.load("sprites\\AnimatedStreet.png")
 
     while True:
         botao_pressionado = pygame.key.get_pressed()
@@ -42,22 +42,22 @@ def estatisticas(tela,pontuacao, distancia, items_coletados):
         ESTATISTICA_ITEMS_COLETADOS.update(tela)
 
         pygame.display.update()
-
-def menu_principal(tela):
+#foi adicionado a pontuacao no parametro para facilitar o acesso
+def menu_principal(tela, pontuacao):
     botao_selecionado = 0
     tocar_musica()
 
     botoes = [
-        Botao(image=pygame.image.load("C:\\Users\\Aluno\\Desktop\\jogo_pacman\\Menu_inicial.png"), pos=(750, 290), 
+        Botao(image=pygame.image.load("sprites\\Menu_inicial.png"), pos=(750, 290), 
               text_input="MENU INICIAL", font=get_font(75), base_color="#d7fcd4"),
-        Botao(image=pygame.image.load("C:\\Users\\Aluno\\Desktop\\jogo_pacman\\Sombra_Estatisticas.png"), pos=(750, 470), 
+        Botao(image=pygame.image.load("sprites\\Sombra_Estatisticas.png"), pos=(750, 470), 
               text_input="ESTATÍSTICAS", font=get_font(80), base_color="#d7fcd4"),
-        Botao(image=pygame.image.load("C:\\Users\\Aluno\\Desktop\\jogo_pacman\\Sombra_Sair.png"), pos=(750, 620), 
+        Botao(image=pygame.image.load("sprites\\Sombra_Sair.png"), pos=(750, 620), 
               text_input="SAIR", font=get_font(80), base_color="#d7fcd4")
     ]
 
     while True:
-        BG = pygame.image.load("C:\\Users\\Aluno\\Desktop\\jogo_pacman\\back1.jpg")
+        BG = pygame.image.load("sprites\\back1.jpg")
         tela.blit(BG, (0, 0))
 
         MENU_TEXTO = get_font(120).render("VOCÊ BATEU!", True, "Red")
@@ -85,7 +85,7 @@ def menu_principal(tela):
                     if botao_selecionado == 0:
                         pass #voltar ao menu inicial
                     elif botao_selecionado == 1: #aqui coloca as estatísticas do
-                        pontuacao = 0
+                        #removi pontuacao (vai ser dado na chamada da funcao)
                         distancia = 0
                         items_coletados = 0
                         estatisticas (tela, pontuacao, distancia, items_coletados)

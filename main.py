@@ -82,8 +82,8 @@ placar = placar()
 delay_faixa = 0
 
 #imagems
-bg = pygame.image.load('bg.jpg')
-car_red = pygame.image.load('car_red.png')
+bg = pygame.image.load('sprites\\bg.jpg')
+car_red = pygame.image.load('sprites\\car_red.png')
 
 #loop principal do jogo
 running = True
