@@ -56,7 +56,14 @@ class carro_jogador(object):
 def redraw_window(): #função para atualizar a tela
     win.blit(sprites.bg, (0, 0))
     player.draw(win,sprites.car_red)
-    inimigo.draw(win,sprites.car_green)
+
+    #loop que passará por todos os inimigos que estão na tela e os atualizarão
+    for inimigo in inimigos:
+        if not fantasma_ativo:
+            inimigo.draw(win,sprites.car_green)
+        else: #faz os inimigos piscarem caso fantasma esteja ativo
+            if tempo_segundos%2 == 1:
+                inimigo.draw(win, sprites.car_green)
 
     #loop que passará por todos os items que atualmente estão na tela e os atualizarão
     for item_type in items.current_items.keys():
@@ -102,7 +109,9 @@ clock = pygame.time.Clock()
 player = carro_jogador(0,4,166,100)
 
 #instancia do inimigo usado para teste
+inimigos = []
 inimigo = inimigo_teste.carro_inimigo(1000,4,166,100)
+inimigos.append(inimigo)
 
 #ficha de cassino teste
 ficha_teste = items.ficha_cassino(800,80,80,2)
@@ -185,18 +194,16 @@ while running:
     #timer dos items
     if fantasma_ativo or interrogacao_ativo:
         tempo_atual = pygame.time.get_ticks()
+        tempo_segundos = (tempo_atual - tempo_ativacao) // 1000
         fonte = pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 32)
         #cria a instancia do timer ou altera o seu valor
         if timer == "":
             timer = items.timer_items()
         else:
-            timer.alterar_tempo(15-(tempo_atual-tempo_ativacao)//1000)
-
-
+            timer.alterar_tempo(15-tempo_segundos)
 
     #15 segundos de item ativo
-    if fantasma_ativo or interrogacao_ativo:
-        if (tempo_atual-tempo_ativacao)//1000 == 15:
+        if tempo_segundos == 15:
             fantasma_ativo = False
             interrogacao_ativo = False
             timer = ''
