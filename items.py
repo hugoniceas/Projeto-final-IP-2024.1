@@ -21,6 +21,10 @@ class item(object):
 
     def increment_sprite_cycle(self):
         self.sprite_cycle += 1
+
+    def hit(self): #executa um comando ao colidir com o jogador
+        pass
+
 class ficha_cassino(item):
     def __init__(self,x,largura,altura,faixa):
         super().__init__(x,largura,altura,faixa)
@@ -40,14 +44,31 @@ class fantasma(item):
         self.cycle_limit = 32
         self.cycle_step = 4
         self.hitbox = (self.x+22,self.y,largura,altura)
+        self.ativo = False
 
+    def hit(self):
+        self.ativo = True
 class interrogacao(item):
     def __init__(self,x,largura,altura,faixa):
         super().__init__(x,largura,altura,faixa)
         self.cycle_limit = 24
         self.cycle_step = 3
         self.hitbox = (self.x+34,self.y,largura,altura)
+        self.ativo = False
 
+    def hit(self):
+        self.ativo = True
+
+class timer_items(object):
+    def __init__(self):
+        self.tempo = 15
+
+    def draw(self,win,font):
+        texto = font.render('Tempo restante:' + str(self.tempo),1, (255,255,255))
+        win.blit(texto,(900,750))
+
+    def alterar_tempo(self,tempo):
+        self.tempo = tempo
 
 #dicionario que conterá todos os itens que estarão na tela:
 current_items = {'ficha cassino':[],

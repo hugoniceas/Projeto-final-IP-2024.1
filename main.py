@@ -14,19 +14,11 @@ class carro_jogador(object):
         self.y = constantes.faixas[faixa]
         self.largura = largura
         self.altura = altura
-        self.velocidade = 1
+        self.velocidade = 20
         self.faixa = faixa
 
         #hitbox temporária para teste dos itens
         self.hitbox = (self.x,self.y,166,100)
-
-    def acelerar(self):
-        if self.velocidade <= 20: #velocidade máxima
-            self.velocidade += 1
-
-    def freiar(self):
-        if self.velocidade > 1:
-            self.velocidade -= 1
 
     def subir(self): #sobe o carro em 1 faixa
         if self.faixa != 1:
@@ -39,10 +31,17 @@ class carro_jogador(object):
                 self.y += 140
                 self.faixa += 1
 
-    def andar(self):
-        self.x += self.velocidade
-        if self.x >= 1500: #retorna para o começo caso o jogador complete uma volta
-            self.x = -166
+    def progredir(self):
+        if self.x + self.velocidade <= 1334:
+            self.x += self.velocidade
+        else:
+            self.x = 1334
+
+    def voltar(self):
+        if self.x - self.velocidade >= 0:
+            self.x -= self.velocidade
+        else:
+            self.x = 0
 
     def draw(self, win, sprite): #desenha o carro na tela
 
@@ -51,6 +50,8 @@ class carro_jogador(object):
         #pygame.draw.rect(win, (0,0,255), self.hitbox,2)
 
         win.blit(sprite, (self.x, self.y))
+
+
 
 def redraw_window(): #função para atualizar a tela
     win.blit(sprites.bg, (0, 0))
@@ -69,6 +70,9 @@ def redraw_window(): #função para atualizar a tela
                 item.reset_sprite_cyle()
             else:
                 item.increment_sprite_cycle()
+
+    if timer != "":
+        timer.draw(win, fonte)
 
     pygame.display.update()
 
@@ -106,18 +110,19 @@ fantasma_teste = items.fantasma(600,56,100,1)
 #interrogacao teste
 interrogacao_teste = items.interrogacao(500,32,100,3)
 
-#delay de troca de faixa
-delay_faixa = 0
+#variavel reservada ao timer dos items
+timer = ''
+
+
+#flags de detecção se os interrogacao ou fantasma estão ativos
+fantasma_ativo = False
+interrogacao_ativo = False
 
 #loop principal do jogo
 running = True
 while running:
     clock.tick(30)
 
-    if delay_faixa > 0:
-        delay_faixa += 1
-    if delay_faixa == 4:
-        delay_faixa = 0
 
     #sair da janela
     for event in pygame.event.get():
@@ -135,6 +140,22 @@ while running:
                 items.current_items['fantasma'].append(fantasma_teste)
             if event.key == pygame.K_i: #cria uma interrogação
                 items.current_items['interrogacao'].append(interrogacao_teste)
+            if event.key == pygame.K_x:
+                print(player.x)
+
+            #comandos de troca de faixa
+            if event.key == pygame.K_DOWN and not interrogacao_ativo:
+                player.descer()
+            elif event.key == pygame.K_DOWN and interrogacao_ativo:
+                player.subir()
+
+            if event.key == pygame.K_UP and not interrogacao_ativo:
+                player.subir()
+            elif event.key == pygame.K_UP and interrogacao_ativo:
+                player.descer()
+
+
+
 
     #colisão do carro com inimigo
     if checar_colisao(player,inimigo):
@@ -144,28 +165,51 @@ while running:
     for item_type in items.current_items.keys():
         for item in items.current_items[item_type]:
             if checar_colisao(player,item):
+                item.hit()
                 items.current_items[item_type].remove(item)
                 items.quantidade[item_type] += 1
+                if item_type == 'fantasma':
+                    fantasma_ativo = True
+                elif item_type == 'interrogacao':
+                    interrogacao_ativo = True
+                if fantasma_ativo or interrogacao_ativo:
+                    tempo_ativacao = pygame.time.get_ticks()
+
+    #timer dos items
+    if fantasma_ativo or interrogacao_ativo:
+        tempo_atual = pygame.time.get_ticks()
+        fonte = pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 32)
+        #cria a instancia do timer ou altera o seu valor
+        if timer == "":
+            timer = items.timer_items()
+        else:
+            timer.alterar_tempo(15-(tempo_atual-tempo_ativacao)//1000)
+
+
+
+    #15 segundos de item ativo
+    if fantasma_ativo or interrogacao_ativo:
+        if (tempo_atual-tempo_ativacao)//1000 == 15:
+            fantasma_ativo = False
+            interrogacao_ativo = False
+            timer = ''
 
 
     #checa quais teclas estão sendo pressionadas e realiza os respectivos comandos
     keys = pygame.key.get_pressed()
 
-    if keys[pygame.K_LEFT]:
-        player.freiar()
-    if keys[pygame.K_RIGHT]:
-        player.acelerar()
-    if keys[pygame.K_UP] and delay_faixa == 0:
-        player.subir()
-        delay_faixa = 1
-    if keys[pygame.K_DOWN] and delay_faixa == 0:
-        player.descer()
-        delay_faixa = 1
+    if keys[pygame.K_LEFT] and not interrogacao_ativo:
+        player.voltar()
+    elif keys[pygame.K_LEFT] and interrogacao_ativo:
+        player.progredir()
+
+    if keys[pygame.K_RIGHT] and not interrogacao_ativo:
+        player.progredir()
+    elif keys[pygame.K_RIGHT] and interrogacao_ativo:
+        player.voltar()
 
 
 
-    # movimenta o jogador a partir da velocidade e checa caso ele vá completar uma volta
-    player.andar()
 
     #atualiza a tela
     redraw_window()
