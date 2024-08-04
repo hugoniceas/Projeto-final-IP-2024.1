@@ -1,5 +1,6 @@
 import constantes
 import pygame
+from random import randrange, choice
 class item(object):
     #função construtora
     def __init__(self,x,largura,altura,faixa):
@@ -59,6 +60,7 @@ class interrogacao(item):
     def hit(self):
         self.ativo = True
 
+
 class timer_items(object):
     def __init__(self):
         self.tempo = 15
@@ -76,8 +78,60 @@ current_items = {'ficha cassino':[],
            'fantasma': [],
             'interrogacao': []}
 
-#dicionário com a quantidade de itens coletados
+#dicionário com a quantidade de itens coletados naquela jogada
 quantidade  = {'ficha cassino':0,
            'moeda': 0,
            'fantasma': 0,
             'interrogacao': 0}
+
+
+
+
+'''um item vai spawnar a cada intervalo de 3-6 segundos
+o máximo de items por faixa é 1
+fantasmas não podem spawnar caso interrogação esteja ativada e vice-versa
+itens somem após 10 segundos
+não pode ter mais de um fantasma por vez, mesmo pra interrogação
+
+chances de spawn
+moeda = 75%
+fantasma = 10%
+interrogação = 10%
+ficha cassino = 5%'''
+
+
+def spawnar_items(tempo_spawn,faixas_ocupadas,faixas_disponiveis,current_items,x_player,largura_player):
+#só tentara spawnar algum item caso tenha alguma faixa não ocupada
+    if len(faixas_ocupadas) < 4:
+        faixa_item = choice(faixas_disponiveis)
+        faixas_disponiveis.remove(faixa_item)
+        faixas_ocupadas.append(faixa_item)
+
+
+
+        #x do carro é a traseira
+        #coordenada x do item
+        x_valido = False
+        while not x_valido:
+            x_coord_item = randrange(100,1401)
+            if x_coord_item + 80 < x_player or x_coord_item > x_player + largura_player:
+                x_valido = True
+
+        #tipo do item
+        tipo_item = randrange(101)
+        if tipo_item <= 75:
+            item_atual = moeda(x_coord_item,64,64,faixa_item)
+            current_items['moeda'].append(item_atual)
+        elif tipo_item <= 85:
+            item_atual = fantasma(x_coord_item,56,100,faixa_item)
+            current_items['fantasma'].append(item_atual)
+        elif tipo_item <= 95:
+            item_atual = interrogacao(x_coord_item,32,100,faixa_item)
+            current_items['interrogacao'].append(item_atual)
+        else:
+            item_atual = ficha_cassino(x_coord_item,80,80,faixa_item)
+            current_items['ficha cassino'].append(item_atual)
+
+
+
+    return 0

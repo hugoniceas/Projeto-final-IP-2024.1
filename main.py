@@ -1,8 +1,8 @@
 import pygame
-import inimigo_teste
 import items
 import sprites
 import constantes
+from random import randrange
 
 pygame.init()
 
@@ -110,8 +110,8 @@ player = carro_jogador(0,4,166,100)
 
 #instancia do inimigo usado para teste
 inimigos = []
-inimigo = inimigo_teste.carro_inimigo(1000,4,166,100)
-inimigos.append(inimigo)
+#inimigo = inimigo_teste.carro_inimigo(1000,4,166,100)
+#inimigos.append(inimigo)
 
 #ficha de cassino teste
 ficha_teste = items.ficha_cassino(800,80,80,2)
@@ -128,6 +128,14 @@ interrogacao_teste = items.interrogacao(500,32,100,3)
 #variavel reservada ao timer dos items
 timer = ''
 
+#relógio de spawn dos items
+tempo_spawn = 0
+
+#faixas já ocupadas por itens
+faixas_ocupadas_itens = []
+
+#faixas não ocupadas por itens
+faixas_livres_itens = [1,2,3,4]
 
 #flags de detecção se os interrogacao ou fantasma estão ativos
 fantasma_ativo = False
@@ -137,6 +145,16 @@ interrogacao_ativo = False
 running = True
 while running:
     clock.tick(30)
+
+    #spawn aleatório dos items
+    if tempo_spawn == 0:
+        tempo_spawn = randrange(3,7)
+        comeco_ciclo_items = pygame.time.get_ticks()
+
+    if tempo_spawn != 0:
+        ciclo_items_atual = pygame.time.get_ticks()
+        if (ciclo_items_atual-comeco_ciclo_items)//1000 == tempo_spawn:
+            tempo_spawn = items.spawnar_items(tempo_spawn,faixas_ocupadas_itens,faixas_livres_itens,items.current_items,player.x,player.largura)
 
 
     #sair da janela
@@ -173,8 +191,8 @@ while running:
 
 
     #colisão do carro com inimigo
-    if checar_colisao(player,inimigo,fantasma_ativo,'inimigo'):
-        player.x = 0
+    #if checar_colisao(player,inimigo,fantasma_ativo,'inimigo'):
+        #player.x = 0
 
     #colisão do carro com items
     for item_type in items.current_items.keys():
@@ -189,6 +207,8 @@ while running:
                 elif item_type == 'interrogacao':
                     interrogacao_ativo = True
                     tempo_ativacao = pygame.time.get_ticks()
+                faixas_livres_itens.append(item.faixa)
+                faixas_ocupadas_itens.remove(item.faixa)
 
 
     #timer dos items
