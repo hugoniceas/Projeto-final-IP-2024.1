@@ -113,17 +113,6 @@ inimigos = []
 #inimigo = inimigo_teste.carro_inimigo(1000,4,166,100)
 #inimigos.append(inimigo)
 
-#ficha de cassino teste
-ficha_teste = items.ficha_cassino(800,80,80,2)
-
-#moeda teste
-moeda_teste = items.moeda(400,64,64,2)
-
-#fantasma teste
-fantasma_teste = items.fantasma(600,56,100,1)
-
-#interrogacao teste
-interrogacao_teste = items.interrogacao(500,32,100,3)
 
 #variavel reservada ao timer dos items
 timer = ''
@@ -137,14 +126,31 @@ faixas_ocupadas_itens = []
 #faixas não ocupadas por itens
 faixas_livres_itens = [1,2,3,4]
 
-#flags de detecção se os interrogacao ou fantasma estão ativos
+#flags de detecção se interrogacao ou fantasma estão ativos
 fantasma_ativo = False
 interrogacao_ativo = False
+
+#flags de detecção se existem interrogação ou fantasma na pista
+existe_powerup = False
 
 #loop principal do jogo
 running = True
 while running:
     clock.tick(30)
+
+    #timer dos itens já existentes
+    tempo_atual = pygame.time.get_ticks()
+    for item_type in items.current_items.keys():
+        for item in items.current_items[item_type]:
+            tempo_vida = (tempo_atual - item.tempo_spawn)//1000
+            if tempo_vida >= 10:
+                items.current_items[item_type].remove(item)
+                if item_type == 'fantasma' or item_type == 'interrogacao':
+                    existe_powerup = False
+                faixas_livres_itens.append(item.faixa)
+                faixas_ocupadas_itens.remove(item.faixa)
+
+
 
     #spawn aleatório dos items
     if tempo_spawn == 0:
@@ -154,34 +160,21 @@ while running:
     if tempo_spawn != 0:
         ciclo_items_atual = pygame.time.get_ticks()
         if (ciclo_items_atual-comeco_ciclo_items)//1000 == tempo_spawn:
-            tempo_spawn = items.spawnar_items(tempo_spawn,faixas_ocupadas_itens,faixas_livres_itens,items.current_items,player.x,player.largura)
+            especial_ativo = interrogacao_ativo or fantasma_ativo
+            tempo_spawn, existe_powerup = items.spawnar_items(faixas_ocupadas_itens,faixas_livres_itens,items.current_items,
+                                              player.x,player.largura,especial_ativo,existe_powerup)
 
 
     #sair da janela
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        #comandos temporários de desenvolvimento
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_q:
-                print(items.quantidade)
-            if event.key == pygame.K_f: #cria uma ficha de cassino
-                items.current_items['ficha cassino'].append(ficha_teste)
-            if event.key == pygame.K_m: #cria uma moeda
-                items.current_items['moeda'].append(moeda_teste)
-            if event.key == pygame.K_g: #cria um fantasma
-                items.current_items['fantasma'].append(fantasma_teste)
-            if event.key == pygame.K_i: #cria uma interrogação
-                items.current_items['interrogacao'].append(interrogacao_teste)
-            if event.key == pygame.K_x:
-                print(player.x)
-
             #comandos de troca de faixa
             if event.key == pygame.K_DOWN and not interrogacao_ativo:
                 player.descer()
             elif event.key == pygame.K_DOWN and interrogacao_ativo:
                 player.subir()
-
             if event.key == pygame.K_UP and not interrogacao_ativo:
                 player.subir()
             elif event.key == pygame.K_UP and interrogacao_ativo:
@@ -198,20 +191,23 @@ while running:
     for item_type in items.current_items.keys():
         for item in items.current_items[item_type]:
             if checar_colisao(player,item,fantasma_ativo,'item'):
-                item.hit()
                 items.current_items[item_type].remove(item)
                 items.quantidade[item_type] += 1
                 if item_type == 'fantasma':
                     fantasma_ativo = True
                     tempo_ativacao = pygame.time.get_ticks()
+                    existe_powerup = False
                 elif item_type == 'interrogacao':
                     interrogacao_ativo = True
                     tempo_ativacao = pygame.time.get_ticks()
+                    existe_powerup = False
                 faixas_livres_itens.append(item.faixa)
                 faixas_ocupadas_itens.remove(item.faixa)
 
 
-    #timer dos items
+
+
+    #timer de ativação dos power-ups
     if fantasma_ativo or interrogacao_ativo:
         tempo_atual = pygame.time.get_ticks()
         tempo_segundos = (tempo_atual - tempo_ativacao) // 1000
