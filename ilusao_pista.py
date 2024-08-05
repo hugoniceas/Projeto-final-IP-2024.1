@@ -1,11 +1,15 @@
 import pygame 
 from sys import exit
 import menu_fim_jogo
-from Inf_para_adicionar import velocidade
+import Inf_para_adicionar
+from BOTOES import Botao
 
 pygame.init()
 tela = pygame.display.set_mode((1500, 800))
 sprite = pygame.image.load('C:\\Users\\Aluno\\Desktop\\jogo_pacman\\imagens\\bg.jpg')
+velocidade = 0
+font_scores = pygame.font.SysFont("Verdana", 20)
+
 
 class Background(pygame.sprite.Sprite):
     def __init__(self, pos_x):
@@ -28,23 +32,27 @@ for i in range(4):
 
 relogio = pygame.time.Clock()
 
+INC_velocidade = pygame.USEREVENT + 1  #evento personalizado para aumentar a velocidade com o tempo
+pygame.time.set_timer(INC_velocidade, 1000) 
+
 while True:
     relogio.tick(30)
     tela.fill((255,255,255))
     for eventos in pygame.event.get():
         botao_pressionado = pygame.key.get_pressed()
+        if eventos.type == INC_velocidade: #aumenta a velocidade
+            velocidade += 2  
         if eventos.type == pygame.QUIT or botao_pressionado[pygame.K_e]:
             pygame.quit()
             exit()
         if botao_pressionado[pygame.K_r]: #deve substituir pela batida, para que vá ao menu de fim de jogo
             menu_fim_jogo.menu_principal(tela)
-        if botao_pressionado[pygame.K_RIGHT]: #aumenta a velocidade
-            velocidade += 2
-        if botao_pressionado[pygame.K_LEFT]:
-            if velocidade >0:
-                velocidade -= 1
         
     todas_sprites.draw(tela)
+    # scores = Botao(image=None, pos=(10, 10), 
+    #                           text_input=f"PONTUAÇÃO: {Inf_para_adicionar.pontuacao}", font=get_font(55), base_color="Purple")
     todas_sprites.update(velocidade)
+    scores = font_scores.render(str(Inf_para_adicionar.pontuacao), True, (255,255,255))
+    tela.blit(scores, (100, 100))
 
     pygame.display.flip()
