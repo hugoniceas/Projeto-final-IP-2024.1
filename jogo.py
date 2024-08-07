@@ -321,7 +321,8 @@ class jogo(GameState):
             #sair da janela
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    running = False
+                    self.set_run(False)
+                    self.set_next_state('Sair')
                 if event.type == pygame.KEYDOWN:
                     #comandos de troca de faixa
                     if event.key == pygame.K_DOWN and not interrogacao_ativo:
