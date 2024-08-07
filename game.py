@@ -28,7 +28,6 @@ def transicao(estado_atual, proximo_estado):
             estado_atual.set_run(False)
     if proximo_estado == 'Sair':
         run = False
-        pygame.quit()
         sys.exit()
     if proximo_estado == 'Jogo':
         jogo.set_next_state('')
