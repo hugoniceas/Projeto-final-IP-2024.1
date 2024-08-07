@@ -21,6 +21,8 @@ set_next_state, que altera o valor contido no atributo proximo_estado
 get_next_state, que retorna a string contida no atributo proximo_estado
 escrever_texto_opcoes, que permite a escrita padronizada de texto, no formato do texto (essa não foi usada em todos os módulos)
 
+Todas as telas eram primeiro programadas de forma isolada, para simplificar o processo de obter um modelo funcional de cada parte do jogo. Após esse modelo funcional ser alcançado, o código desse modelo era inserido dentro da função abrir/iniciar, pertencente à classe filha de GameState em questão. Uma vantagem dessa abordagem, além de permitir a execução seletiva dos módulos, é a possibilidade de compartilhar objetos entre diferentes partes do jogo, ao passá-los como parâmetros, como aconteceu com a conta bancária do jogador, com a skin atual que ele está utilizando e com a matriz contendo informações (caminho da imagem na pasta, preço na loja, se a skin já foi desbloqueada) sobre as skins presentes no jogo. Os módulos eram, então, testados em conjunto, a partir do arquivo game.py, de modo que a quantidade de módulos integrados fosse aumentando até atingir todos os arquivos do jogo, finalizando o projeto.
+
 Ferramentas, bibliotecas e frameworks:
 
 pygame : A biblioteca pygame foi escolhida para o projeto como base de construção do código. Ela permite que jogos sejam construídos em python de maneira simples e intuitiva para quem está familiarizado com a linguagem. Visto que sua documentação é extensa e existem diversos materiais para auxílio e estudo em pygame, ela foi nossa escolha.
