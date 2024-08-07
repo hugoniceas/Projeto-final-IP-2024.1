@@ -97,3 +97,18 @@ Um exemplo disso é o carregamento de imagens, enquanto os módulos Menu, Loja e
 Na implementação da roleta (Cassino), houve dificuldade para lidar com o botão de espaço ser apertado diversas vezes enquanto a roleta gira.
 Na implementação dos diferentes backgrounds, houve grande dificuldade de conseguir fazer com que vários backgrounds diferentes se encaixassem na estrutura que havia sido feita anteriormente para apenas um background.
 Mesmo utilizando modularização, ainda houve bastante trabalho manual para juntar as partes separadas e corrigir problemas que não estavam evidentes antes ou que surgiram após essas junções.
+
+# Capturas de tela do projeto
+Menu Inicial
+<img src="/assets/Screenshot_19.png">
+
+Cassino
+<img src="/assets/Screenshot_20.png">
+
+Loja de Skins
+<img src="/assets/Screenshot_21.png">
+
+Jogo em funcionamento
+<img src="/assets/Screenshot_22.png">
+<img src="/assets/Screenshot_23.png">
+<img src="/assets/Screenshot_24.png">
