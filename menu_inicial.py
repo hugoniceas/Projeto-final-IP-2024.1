@@ -1,5 +1,7 @@
 import pygame
+import carro_atual
 from game_state import GameState
+from carro_atual import CarroAtual
 
 
 class MenuInicial(GameState):
@@ -7,14 +9,15 @@ class MenuInicial(GameState):
         super().__init__('Menu', run, '')
 
 
-    def abrir_menu(self):
+    def abrir_menu(self, carro_atual, info):
         pygame.init()
-        Clock = pygame.time.Clock()
+        skin = carro_atual.skin
+        clock = pygame.time.Clock()
         pygame.display.set_caption('Direção Perigosa')
         fonte_titulo = pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 64)
         fonte_menu = pygame.font.Font('assets/fonts/PressStart2P-Regular.ttf', 32)
         plano_de_fundo = pygame.image.load("assets/backgrounds/bg.jpg")
-        carro = pygame.image.load("assets/sprites/car_red.png")
+        carro = pygame.image.load(skin)
         tamanho_cursor = (int(carro.get_width()) * 0.4, int(carro.get_height()) * 0.4)
         cursor = pygame.transform.flip(pygame.transform.scale(carro, tamanho_cursor), True, False)
         tela = pygame.display.set_mode((1500, 800))
@@ -25,6 +28,7 @@ class MenuInicial(GameState):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.set_run(False)
+                    self.set_next_state('Sair')
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_SPACE:
                         if y_cursor == 348:  # Jogar
@@ -50,7 +54,7 @@ class MenuInicial(GameState):
                             y_cursor += 50
             titulo = fonte_titulo.render('Direção Perigosa', True, (255, 255, 255))
             sombra_titulo = fonte_titulo.render('Direção Perigosa', True, (0, 0, 0))
-            Clock.tick(60)
+            clock.tick(60)
             if y_cursor == 348:
                 x_cursor = 305 + pygame.font.Font.size(fonte_menu, 'Dirigir')[0] + distancia_cursor
             if y_cursor == 398:
@@ -74,4 +78,6 @@ class MenuInicial(GameState):
 
 if __name__ == '__main__':
     menu = MenuInicial(True)
-    menu.abrir_menu()
+    skin = carro_atual.CarroAtual()
+    menu.abrir_menu(skin)
+
